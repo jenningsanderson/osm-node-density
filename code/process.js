@@ -8,7 +8,7 @@ var tiles = {};
 
 handler.on('node', function(node) {
     count++;
-    if (count % 0100000000 === 0) console.error("… processed "+count+" nodes.");
+    if (count % 010000 === 0) console.error("\rprocessed "+count+" nodes.\r");
     //var xyz = merc.xyz([node.lon, node.lat, node.lon, node.lat], 13);
     //var x = xyz.minX,
     //    y = xyz.minY;
@@ -33,6 +33,6 @@ handler.on('done',function() {
 
 var file = new osmium.File("-", "pbf");
 var reader = new osmium.Reader(file);
-reader.apply(reader, handler);
+osmium.apply(reader, handler);
 
 
