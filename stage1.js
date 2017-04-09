@@ -14,7 +14,7 @@ handler.on('init', function(){
 handler.on('node', function(node) {
     count++;
     if (count % 100000 === 0) console._stderr.write("\rprocessed "+count+" nodes.");
-    var xy = merc.px([node.lon, node.lat], 17), //This is not the zoom level, this is zoom + (8)
+    var xy = merc.px([node.lon, node.lat], 15), //This is not the zoom level, this is zoom + (8)
         x = Math.floor(xy[0]/256),
         y = Math.floor(xy[1]/256);
     if (!tiles[x])
@@ -28,7 +28,7 @@ handler.on('after_nodes',function() {
     console.error("\nDone processing "+count+" nodes.");
     for (var x in tiles)
         for (var y in tiles[x]) {
-            var lat = merc.ll([0,y*256], 17)[1];
+            var lat = merc.ll([0,y*256], 15)[1];
             outFile.write(x + " " + y +" " + Math.round(tiles[x][y] / Math.cos(lat*Math.PI/180))+"\n");
         }
 });
