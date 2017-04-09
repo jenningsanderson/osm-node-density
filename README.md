@@ -3,6 +3,8 @@ Visualizing OSM Node Density
 
 Using [Martin Raifer's osm-node-density visualization](http://www.openstreetmap.org/user/tyr_asd/diary/22363), I re-produced the map with a workflow designed to be compatible with mapbox-gl.
 
+See the [interactive page with annual diffs here](http://tyrasd.github.io/osm-node-density)
+
 # Running this Fork:
 
 ### Stage 1: pbf --> txt
