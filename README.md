@@ -1,38 +1,47 @@
-osm-node-density
-================
+Visualizing OSM Node Density
+============================
 
-A visualization of OpenStreetMaps node density ([read more](http://www.openstreetmap.org/user/tyr_asd/diary/22363)).
-
-[![](http://wiki.openstreetmap.org/w/images/3/37/OSM-node-density-map-HD-crop-2014.png)](http://tyrasd.github.io/osm-node-density/)
-
-Licensing
----------
-
-Based on [© OpenStreetMap data (ODbL)](http://www.openstreetmap.org/copyright).
-
-Visualizations [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/).
-
-
-
+Using [Martin Raifer's osm-node-density visualization](http://www.openstreetmap.org/user/tyr_asd/diary/22363), I re-produced the map with a workflow designed to be compatible with mapbox-gl.
 
 # Running this Fork:
 
 ### Stage 1: pbf --> txt
 
-    node --max_old_space_size=64000 stage1.js /data/osm/us-west/denver-boulder.osh.pbf ./output/boulderdenver-9.txt
+    node --max_old_space_size=64000 stage1.js /data/osm/latest-planet.osm.pbf ./output/planet-7.txt    
     
+### Stage 2: gnuplot
     
-### Stage 2: Downscaling:
-Set the root and the starting zoom level
+Set the proper outputs and inputs in `code/plot.gp` like `../output/planet-7` and then run with:
+    
+    gnuplot code/plot.gp
 
-    ./stage2.sh ~/osm-node-density/output/boulderdenver- 9
-    
-### Stage 3: gnuplot
-    
-Set the proper outputs and inputs in `code/plot.gp` like `../output/boulderdenver-` and then run with:
-    
-    gnuplot plot.gp
+### Stage 3: Can use the `Built Tiles` notebook to build the local tiles, or run the following script to geo-reference the result:
 
-Manually do this for each zoom level, adjusting just the zoom = "z" each time to match the file
+    export GDAL_TIFF_OVR_BLOCKSIZE=256
+    gdal_translate -of Gtiff \
+      -co BLOCKXSIZE=256 -co BLOCKYSIZE=256 -co COMPRESS=LZW \
+      -a_ullr -20026376 20048966 20026376 -20048966 \
+      -a_srs EPSG:3857 planet.png planet.geotiff
 
-### Stage 4: Open the "Build Tiles" Notebook
+Upload the planet.geotiff to mapbox to make raster mbtiles and then load into a mapbox-gl style like so:
+
+    map.addLayer({
+        'id': 'planet-node-density',
+        'type':'raster',
+        'source': {
+            'type': 'raster',
+            'url' : "mapbox://< tileset id >",
+            "tileSize": 256
+        }
+     });
+
+
+Original Licensing
+------------------
+
+Code base from Martin Raifer
+
+Based on [© OpenStreetMap data (ODbL)](http://www.openstreetmap.org/copyright).
+
+Visualizations [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/).
+
