@@ -12,7 +12,7 @@ set bmargin at screen 1
 
 set palette rgbformulae 34,35,36
 
-zoom = "0"
+zoom = "8"
 
 zoom2 = (zoom)+8
 print(zoom2)
@@ -30,6 +30,6 @@ set object rectangle from screen 0,0 to screen 1,1 fillcolor rgb"#000000" behind
 # set terminal png size width/4,width/4
 set terminal png size width,width
 
-set output ("../output/boulderdenver-".zoom.".png")
+set output ("../output/planet-".zoom.".png")
 
-plot ('../output/boulderdenver-'.zoom.'.txt') using ($1):(width-1-$2):(log($3)) with dots palette
+plot ('../output/planet-7.txt') using ($1):(width-1-$2):(log($3)) with dots palette

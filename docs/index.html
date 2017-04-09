@@ -1,0 +1,89 @@
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>OSM Node Density</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.35.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.35.0/mapbox-gl.css' rel='stylesheet' />
+
+    <link href="https://api.mapbox.com/mapbox-assembly/v0.12.0/assembly.min.css" rel="stylesheet">
+
+    <style>
+        body { margin:0; padding:0; }
+        #map { position:absolute; top:0; bottom:0; width:100%; }
+    </style>
+
+</head>
+<body>
+
+<div style="position:fixed; top: 20; right: 20; z-index:100">
+    <button class='btn btn--xs btn--red' onclick="toggleLabels()">Toggle Labels</button>
+</div>
+
+<div id='map'></div>
+
+<script>
+var bounds = [
+    [-180.0, -85.06], // Southwest coordinates
+    [180, 85.06]  // Northeast coordinates
+];
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiamVubmluZ3NhbmRlcnNvbiIsImEiOiIzMHZndnpvIn0.PS-j7fRK3HGU7IE8rbLT9A';
+var map = new mapboxgl.Map({
+    container: 'map',
+    zoom: 1,
+    minZoom: 1.75,
+    maxZoom: 7,
+    center: [16.5,15.1],
+    hash: true,
+    style: "mapbox://styles/jenningsanderson/cj1a6ti03003s2sllixe2g09m",
+    maxBounds: bounds // Sets bounds as max
+});
+
+map.once('load',function(){
+    map.addLayer({
+        'id': 'planet-node-density',
+        'type':'raster',
+        'source': {
+            'type': 'raster',
+            'url' : "mapbox://jenningsanderson.806y65ik",
+            "tileSize": 256
+        },
+        "minzoom": 1,
+        "maxzoom": 10,
+    },'waterway-label');
+});
+var labels = true
+function toggleLabels(){
+    console.log(map.getLayer('planet-node-density'))
+    labels = !labels
+    if (labels){
+        console.log("going on")
+        map.moveLayer('planet-node-density','waterway-label')
+    }else{
+        console.log("going off")
+        map.moveLayer('planet-node-density')
+    }
+}
+
+class CustomAttribution{
+    onAdd(map) {
+        this._map = map;
+        this._container = document.createElement('div');
+        this._container.className = 'mapboxgl-ctrl mapboxgl-ctrl-attrib';
+        this._container.innerHTML = content;
+        return this._container;
+    }
+    onRemove() {
+        this._container.parentNode.removeChild(this._container);
+        this._map = undefined;
+    }
+}
+var content = 'Made with  <a target="_blank" href="//twitter.com/tyr_asd">Martin Raifer\'s</a> <a target="_blank" href="//github.com/tyrasd/osm-node-density">node density scripts</a>'
+map.addControl(new CustomAttribution(content),'bottom-right')
+
+</script>
+
+</body>
+</html>
+
